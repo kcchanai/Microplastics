@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
     <style>
         .info.legend i {
             width: 20px;
@@ -201,8 +202,14 @@
                                         labels: ['Total', 'Cellulose acetate', 'Acrylic', 'Polypropylene', 'Polycarbonate'],
                                         datasets: [{
                                             label: 'Qty',
-                                            data: [parseFloat(row['Total']) || 0, parseFloat(row['Cellulose acetate']) || 0, parseFloat(row['Acrylic']) || 0, parseFloat(row['Polypropylene']) || 0, parseFloat(row['Polycarbonate']) || 0],
-                                            backgroundColor: ['red','blue', 'green', 'orange', 'purple'],
+                                            data: [
+                                                Number((parseFloat(row['Total']) || 0).toPrecision(3)),
+                                                Number((parseFloat(row['Cellulose acetate']) || 0).toPrecision(3)),
+                                                Number((parseFloat(row['Acrylic']) || 0).toPrecision(3)),
+                                                Number((parseFloat(row['Polypropylene']) || 0).toPrecision(3)),
+                                                Number((parseFloat(row['Polycarbonate']) || 0).toPrecision(3))
+                                            ],
+                                            backgroundColor: ['red', 'blue', 'green', 'orange', 'purple'],
                                         }]
                                     },
                                     options: {
@@ -210,6 +217,18 @@
                                         plugins: {
                                             legend: {
                                                 display: false,
+                                            },
+                                            datalabels: { // Add this block for data labels
+                                                display: true,
+                                                color: 'black',
+                                                font: {
+                                                    weight: 'bold'
+                                                },
+                                                anchor: 'end',
+                                                align: 'top',
+                                                formatter: function(value) {
+                                                    return value; // Display the value above each bar
+                                                }
                                             }
                                         },
                                         scales: {
@@ -226,9 +245,11 @@
                                                 }
                                             }
                                         }
-                                    }
+                                    },
+                                    plugins: [ChartDataLabels] // Enable the plugin
                                 });
                             });
+
                         }
                     });
                 }
