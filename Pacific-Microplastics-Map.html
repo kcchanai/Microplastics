@@ -79,19 +79,19 @@
 
         // Function to add the microplastic legend
         function addLegend() {
-            var legend = L.control({position: 'topright'});
+            var legend = L.control({ position: 'topright' });
 
             legend.onAdd = function () {
                 var div = L.DomUtil.create('div', 'info legend');
                 var labels = ['<strong>Source</strong>'];
                 var categories = [
-                    {name: 'Sand', color: 'orange'},
-                    {name: 'Water', color: 'blue'}
+                    { name: 'Sand', gradient: 'linear-gradient(to right, orangered, yellow)' },
+                    { name: 'Water', gradient: 'linear-gradient(to right, darkblue, cyan)' }
                 ];
 
-                categories.forEach(function(category) {
+                categories.forEach(function (category) {
                     labels.push(
-                        '<i style="background:' + category.color + '"></i> ' + category.name
+                        '<i style="background: ' + category.gradient + '"></i> ' + category.name
                     );
                 });
 
@@ -239,9 +239,18 @@
                                                 }
                                             },
                                             y: {
+                                                ticks: {
+                                                    autoSkip: true,
+                                                    maxTicksLimit: 6 // Adjust this to control the number of ticks
+                                                },
+                                                afterBuildTicks: function(scale) {
+                                                    const originalMax = Math.max(...scale.chart.data.datasets[0].data);
+                                                    const tickSpacing = (scale.max - scale.min) / (scale.ticks.length - 1);
+                                                    scale.max = originalMax + tickSpacing;
+                                                },
                                                 title: {
                                                     display: true,
-                                                    text: `${unit}`  // Use the unit from the data
+                                                    text: `${unit}`
                                                 }
                                             }
                                         }
